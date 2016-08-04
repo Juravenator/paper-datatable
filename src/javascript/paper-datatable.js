@@ -174,7 +174,20 @@ A [material design implementation of a data table](https://www.google.com/design
 
     listeners: {
       'container.scroll': '_triggerDialogResize',
-      'iron-resize': '_resizeListener'
+      'iron-resize': '_resizeListener',
+      'column-property-changed': '_columnPropertyChanged'
+    },
+
+    _columnPropertyChanged: function(event, details) {
+      if (this.isAttached) {
+        for (var i = 0; i < this._columns.length; i++) {
+          if (this._columns[i] == details.column) {
+            this.set(`_columns.${i}.header`, details.column.header);
+            this.set(`_columns.${i}.tooltip`, details.column.tooltip);
+            this.set(`_columns.${i}.sortable`, details.column.sortable);
+          }
+        }
+      }
     },
 
     ready: function() {

@@ -17,7 +17,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
        * @type String
        * @required
        */
-      header: String,
+      header: {
+        type: String,
+        observer: "_columnPropertyChanged"
+      },
       /**
        * The property to be used from `data` for this column
        *
@@ -46,7 +49,8 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
        */
       tooltip: {
         type: String,
-        notify: true
+        notify: true,
+        observer: "_columnPropertyChanged"
       },
       /**
        * Whether to show sorting UI on the column. Sorting only works automagically
@@ -56,7 +60,10 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
        * @type Boolean
        * @default false
        */
-      sortable: Boolean,
+      sortable: {
+        type: Boolean,
+        observer: "_columnPropertyChanged"
+      },
       /**
        * Whether the column is currently sorted. Should only be set on one column at a time
        *
@@ -231,6 +238,16 @@ This element is used inside of `<paper-datatable>` to declare the columns to be 
     behaviors: [
       Polymer.Templatizer
     ],
+
+    _columnPropertyChanged: function() {
+      if (Polymer.Settings.useShadow) {
+        this.fire("column-property-changed", {column: this});
+      } else {
+        // thanks shady dom
+        Polymer.dom(this).parentNode._columnPropertyChanged(null, {column: this});
+      }
+
+    },
 
     created: function(){
       this.beenAttached = new Whenever();
